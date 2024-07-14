@@ -1,0 +1,11 @@
+*.o
+*.d
+*.nds
+*.dsi
+*.elf
+*.map
+*build/
+*.vscode
+*.DS_Store
+*._*
+!nitrofiles/*
