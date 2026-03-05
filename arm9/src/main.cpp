@@ -238,7 +238,7 @@ int main(int argc, char **argv)
 	clearScreen(&topScreen);
 	std::println("\tLauncher tmd restorer");
 	std::println("\nversion {}", VERSION);
-	std::println("\nedo9300 - 2024");
+	std::println("\nedo9300 - 2026");
 	std::print("\x1b[10;0HDetected launcher version: v{}", sourceTmdPath.substr(20));
 	std::print("\x1b[11;0HDetected launcher region: {}", [&] {
 		if(auto launcherTidString = sourceTmdPath.substr(13,2); launcherTidString == "43")
