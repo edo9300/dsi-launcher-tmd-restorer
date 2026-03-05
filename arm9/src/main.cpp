@@ -93,9 +93,25 @@ static auto getSourceAndTargetTmds() {
 			if(pent->d_type == DT_DIR)
 				continue;
 			std::string_view filename{pent->d_name};
-			if(filename.size() != 12 || !filename.ends_with(".app") || !filename.starts_with("0000000"))
+
+			if(filename.size() != 12 || !filename.ends_with(".app"))
 				continue;
-			auto launcher_app_version = static_cast<uint16_t>(static_cast<unsigned char>(filename[7]) - static_cast<unsigned char>('0'));
+
+			auto launcher_app_path = std::format("{}/{}", launcher_content_path, filename);
+			auto f = fopen(launcher_app_path.data(), "rb");
+			uint8_t buff[0x20];
+			auto read = fread(buff, 0x20, 1, f);
+			fclose(f);
+
+			static constexpr std::array<uint8_t, 0xF> hna
+				{'L','A','U','N','C','H','E','R','\0','\0','\0','\0','H','N','A'};
+
+			if(read != 1 || !std::ranges::equal(hna, std::span{buff, buff+0xF})) {
+				continue;
+			}
+
+			uint16_t launcher_app_version;
+			memcpy(&launcher_app_version, &buff[0x1E], 2);
 			if(launcher_app_version > 7)
 				abortWithError(std::format("Found an unsupported launcher version: {}", launcher_app_version));
 			return std::pair{256 * launcher_app_version, std::string{filename}};
